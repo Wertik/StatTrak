@@ -2,15 +2,17 @@ package wertik.stattrak;
 
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import sun.security.krb5.Config;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Utils {
 
-    ConfigLoader cload = new ConfigLoader();
+    private ConfigLoader configLoader;
 
     public Utils() {
+        configLoader = Main.getInstance().getConfigLoader();
     }
 
     // Item re-creation
@@ -56,13 +58,13 @@ public class Utils {
         // The line without the placeholder itself
         String killsline = "";
 
-        if (cload.getFormat()) {
+        if (configLoader.getFormat()) {
 
             // StatTrak lore with a placeholder, not replaced
             // - "---- ST ----"
             // - "%kills%"
             // - "---- ST ----"
-            List<String> stattraklore = cload.getStatTrakLore();
+            List<String> stattraklore = configLoader.getStatTrakLore();
 
             for (String line : stattraklore) {
                 if (line.contains("%kills%")) {
@@ -71,7 +73,7 @@ public class Utils {
                 }
             }
         } else
-            killsline = cload.getStatTrakLine().replace("%kills%", "");
+            killsline = configLoader.getStatTrakLine().replace("%kills%", "");
 
         return killsline;
     }
@@ -83,13 +85,13 @@ public class Utils {
         // The line with the placeholder
         String placeholderline = "";
 
-        if (cload.getFormat()) {
+        if (configLoader.getFormat()) {
 
             // StatTrak lore with a placeholder, not replaced
             // - "---- ST ----"
             // - "%kills%"
             // - "---- ST ----"
-            List<String> stattraklore = cload.getStatTrakLore();
+            List<String> stattraklore = configLoader.getStatTrakLore();
 
             for (String line : stattraklore) {
                 if (line.contains("%kills%")) {
@@ -98,7 +100,7 @@ public class Utils {
                 }
             }
         } else
-            placeholderline = cload.getStatTrakLine();
+            placeholderline = configLoader.getStatTrakLine();
 
         return placeholderline;
     }
@@ -121,9 +123,9 @@ public class Utils {
 
         List<String> newlore = new ArrayList<>();
 
-        if (cload.getFormat()) {
+        if (configLoader.getFormat()) {
 
-            for (String line : cload.getStatTrakLore()) {
+            for (String line : configLoader.getStatTrakLore()) {
                 if (line.contains("%kills%"))
                     line = line.replace("%kills%", String.valueOf(kills));
                 newlore.add(line);

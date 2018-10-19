@@ -3,6 +3,7 @@ package wertik.stattrak;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
+import sun.security.krb5.Config;
 import wertik.stattrak.commands.CommandHandler;
 import wertik.stattrak.listeners.DeathListener;
 
@@ -11,13 +12,11 @@ import java.io.File;
 public class Main extends JavaPlugin {
 
     private static Main instance;
+    private ConfigLoader configLoader;
+    private Utils utils;
 
     public static Main getInstance() {
         return Main.instance;
-    }
-
-    private static void setInstance(Main instance) {
-        Main.instance = instance;
     }
 
     @Override
@@ -25,7 +24,9 @@ public class Main extends JavaPlugin {
 
         ConsoleCommandSender console = getServer().getConsoleSender();
 
-        setInstance(this);
+        instance = this;
+        utils = new Utils();
+        configLoader = new ConfigLoader();
 
         getServer().getPluginManager().registerEvents(new DeathListener(), this);
         getCommand("stattrak").setExecutor(new CommandHandler());
@@ -34,20 +35,9 @@ public class Main extends JavaPlugin {
 
         // YAMLS
 
-        File configfile = new File(getDataFolder() + "/config.yml");
-        FileConfiguration config = getConfig();
-
-        if (!configfile.exists()) {
-
-            config.options().copyDefaults(true);
-
-            saveConfig();
-        }
-
-        ConfigLoader cload = new ConfigLoader();
-
-        cload.loadWeaponTypes();
-        cload.setStrings(console);
+        configLoader.setYamls();
+        configLoader.loadWeaponTypes();
+        configLoader.setStrings(console);
     }
 
     @Override
@@ -55,5 +45,11 @@ public class Main extends JavaPlugin {
         // Eh? Oh I know!
         ConsoleCommandSender console = getServer().getConsoleSender();
         console.sendMessage("§5Disabling StatTrak, you're safe now.");
+    }
+
+    public ConfigLoader getConfigLoader() {return configLoader;}
+
+    public Utils getUtils() {
+        return utils;
     }
 }

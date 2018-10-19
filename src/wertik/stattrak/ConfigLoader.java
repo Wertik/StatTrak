@@ -4,19 +4,22 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ConfigLoader {
 
-    Main plugin = Main.getInstance();
+    private Main plugin;
     public static List<String> weapontypes;
     public static String type;
     public static String line;
     public static List<String> lore;
 
     public ConfigLoader() {
+        plugin = Main.getInstance();
     }
 
     public void setStrings(CommandSender p) {
@@ -29,6 +32,18 @@ public class ConfigLoader {
             p.sendMessage("§aLore " + lore);
             p.sendMessage("§aLine " + line);
             p.sendMessage("§aUsing type of  §f" + type);
+        }
+    }
+
+    public void setYamls() {
+        File configfile = new File(plugin.getDataFolder() + "/config.yml");
+        FileConfiguration config = plugin.getConfig();
+
+        if (!configfile.exists()) {
+
+            config.options().copyDefaults(true);
+
+            plugin.saveConfig();
         }
     }
 
@@ -99,8 +114,6 @@ public class ConfigLoader {
     // Load the weapon types
     public void loadWeaponTypes() {
 
-        this.plugin = Main.getInstance();
-
         ConsoleCommandSender console = plugin.getServer().getConsoleSender();
 
         weapontypes = new ArrayList<>();
@@ -120,8 +133,6 @@ public class ConfigLoader {
 
     // Load the weapon types
     public void loadWeaponTypes(CommandSender p) {
-
-        this.plugin = Main.getInstance();
 
         weapontypes = new ArrayList<>();
 

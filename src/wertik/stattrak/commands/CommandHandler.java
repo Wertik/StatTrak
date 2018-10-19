@@ -11,9 +11,15 @@ import wertik.stattrak.Utils;
 
 public class CommandHandler implements CommandExecutor {
 
-    private Utils utils = new Utils();
-    private ConfigLoader cload = new ConfigLoader();
-    private Main plugin = Main.getInstance();
+    private Utils utils;
+    private ConfigLoader configLoader;
+    private Main plugin;
+
+    public CommandHandler() {
+        plugin = Main.getInstance();
+        configLoader = plugin.getConfigLoader();
+        utils = plugin.getUtils();
+    }
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
@@ -22,9 +28,9 @@ public class CommandHandler implements CommandExecutor {
             if (args[0].equalsIgnoreCase("reload")) {
                 if (sender.hasPermission("pvpc.stattrak.reload")) {
                     plugin.reloadConfig();
-                    cload.loadWeaponTypes(sender);
-                    cload.setStrings(sender);
-                    sender.sendMessage(cload.getFormattedMessage("reloaded"));
+                    configLoader.loadWeaponTypes(sender);
+                    configLoader.setStrings(sender);
+                    sender.sendMessage(configLoader.getFormattedMessage("reloaded"));
                     return true;
                 }
             }
@@ -36,13 +42,13 @@ public class CommandHandler implements CommandExecutor {
 
             ItemStack weapon = p.getEquipment().getItemInMainHand();
 
-            if (cload.isStatTrakable(weapon.getType().toString())) {
+            if (configLoader.isStatTrakable(weapon.getType().toString())) {
 
-                p.sendMessage(cload.getFormattedMessage("stattrak-applied"));
+                p.sendMessage(configLoader.getFormattedMessage("stattrak-applied"));
                 p.getInventory().setItem(p.getInventory().getHeldItemSlot(), utils.recreateItem(weapon));
 
             } else
-                p.sendMessage(cload.getFormattedMessage("not-stattrakable"));
+                p.sendMessage(configLoader.getFormattedMessage("not-stattrakable"));
         }
         return false;
     }
