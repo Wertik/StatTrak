@@ -42,13 +42,17 @@ public class CommandHandler implements CommandExecutor {
 
             ItemStack weapon = p.getEquipment().getItemInMainHand();
 
-            if (configLoader.isStatTrakable(weapon.getType().toString())) {
+            if (p.hasPermission("stattrak.apply") || p.isOp()) {
 
-                p.sendMessage(configLoader.getFormattedMessage("stattrak-applied"));
-                p.getInventory().setItem(p.getInventory().getHeldItemSlot(), utils.recreateItem(weapon));
+                if (configLoader.isStatTrakable(weapon.getType().toString())) {
 
+                    p.sendMessage(configLoader.getFormattedMessage("stattrak-applied"));
+                    p.getInventory().setItem(p.getInventory().getHeldItemSlot(), utils.recreateItem(weapon));
+
+                } else
+                    p.sendMessage(configLoader.getFormattedMessage("not-stattrakable"));
             } else
-                p.sendMessage(configLoader.getFormattedMessage("not-stattrakable"));
+                p.sendMessage(configLoader.getFormattedMessage("no-permission"));
         }
         return false;
     }

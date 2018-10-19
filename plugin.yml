@@ -5,3 +5,6 @@ author: Wertik1206
 commands:
   stattrak:
     description: To add the required lore tho
+permission:
+  stattrak.apply:
+    description: To apply the lore
