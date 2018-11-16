@@ -1,5 +1,5 @@
 name: StatTrak
-version: 1.3.2
+version: 1.5
 main: wertik.stattrak.Main
 author: Wertik1206
 commands:

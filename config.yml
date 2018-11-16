@@ -1,10 +1,5 @@
 Options:
-  format: line
   stattrak-line: "&7[&eStatTrak&7] &7Kills: &4%kills%"
-  stattrak-lore:
-  - "&7&m----&e[ &7StatTrak &e]&7&m----"
-  - "           &7Kills: &4%kills%"
-  - "&7&m----&e[ &7StatTrak &e]&7&m----"
   stattrak-weapon-types:
   - "DIAMOND_SWORD"
   - "IRON_SWORD"

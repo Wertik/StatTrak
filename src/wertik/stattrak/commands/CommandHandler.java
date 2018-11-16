@@ -7,18 +7,18 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import wertik.stattrak.ConfigLoader;
 import wertik.stattrak.Main;
-import wertik.stattrak.Utils;
+import wertik.stattrak.handlers.StattrakHandler;
 
 public class CommandHandler implements CommandExecutor {
 
-    private Utils utils;
     private ConfigLoader configLoader;
     private Main plugin;
+    private StattrakHandler stattrakHandler;
 
     public CommandHandler() {
         plugin = Main.getInstance();
         configLoader = plugin.getConfigLoader();
-        utils = plugin.getUtils();
+        stattrakHandler = plugin.getStattrakHandler();
     }
 
     @Override
@@ -44,10 +44,10 @@ public class CommandHandler implements CommandExecutor {
 
             if (p.hasPermission("stattrak.apply") || p.isOp()) {
 
-                if (configLoader.isStatTrakable(weapon.getType().toString())) {
+                if (stattrakHandler.isStatTrakable(weapon.getType().toString())) {
 
                     p.sendMessage(configLoader.getFormattedMessage("stattrak-applied"));
-                    p.getInventory().setItem(p.getInventory().getHeldItemSlot(), utils.recreateItem(weapon));
+                    p.getInventory().setItem(p.getInventory().getHeldItemSlot(), stattrakHandler.applyStatTrak(weapon));
 
                 } else
                     p.sendMessage(configLoader.getFormattedMessage("not-stattrakable"));

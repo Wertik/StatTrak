@@ -4,7 +4,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.configuration.file.FileConfiguration;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -13,10 +12,8 @@ import java.util.List;
 public class ConfigLoader {
 
     private Main plugin;
-    public static List<String> weapontypes;
-    public static String type;
-    public static String line;
-    public static List<String> lore;
+    public static List<String> weaponTypes;
+    public String line;
 
     public ConfigLoader() {
         plugin = Main.getInstance();
@@ -24,26 +21,20 @@ public class ConfigLoader {
 
     public void setStrings(CommandSender p) {
 
-        this.lore = formatList(getStringList("stattrak-lore"));
         this.line = format(getString("stattrak-line"));
-        this.type = getString("format");
 
-        if (plugin.getConfig().getBoolean("Options.types-on-reload")) {
-            p.sendMessage("§aLore " + lore);
+        if (plugin.getConfig().getBoolean("Options.types-on-reload"))
             p.sendMessage("§aLine " + line);
-            p.sendMessage("§aUsing type of  §f" + type);
-        }
     }
 
-    public void setYamls() {
-        File configfile = new File(plugin.getDataFolder() + "/config.yml");
-        FileConfiguration config = plugin.getConfig();
+    public void loadYamls() {
+        // CF
+        File configFile = new File(plugin.getDataFolder() + "/config.yml");
 
-        if (!configfile.exists()) {
-
-            config.options().copyDefaults(true);
-
+        if (!configFile.exists()) {
+            plugin.getConfig().options().copyDefaults(true);
             plugin.saveConfig();
+            plugin.getServer().getConsoleSender().sendMessage("§f[StatTrak] §aGenerated default §f" + configFile.getName());
         }
     }
 
@@ -60,51 +51,14 @@ public class ConfigLoader {
         return format(plugin.getConfig().getString("Strings." + name).replace("%prefix%", plugin.getConfig().getString("Strings.prefix")));
     }
 
-    public List<String> formatList(List<String> list) {
-
-        List<String> newlist = new ArrayList<>();
-
-        for (String line : list) {
-            newlist.add(format(line));
-        }
-        return newlist;
-    }
-
-    // true/false weapon stattrakable
-    public boolean isStatTrakable(String type) {
-
-        boolean stattrakable = false;
-
-        if (getWeaponTypes().contains(type)) {
-            stattrakable = true;
-        }
-
-        return stattrakable;
-    }
-
     // Get weapon types
     public List<String> getWeaponTypes() {
-        return weapontypes;
-    }
-
-    // Get StatTrak lore
-    public List<String> getStatTrakLore() {
-        return lore;
+        return weaponTypes;
     }
 
     // Get StatTrak line
     public String getStatTrakLine() {
         return line;
-    }
-
-    // Switcher
-    // true == lore
-    // false == line
-    public boolean getFormat() {
-        if (type.equalsIgnoreCase("lore"))
-            return true;
-        else
-            return false;
     }
 
     public String format(String msg) {
@@ -116,15 +70,15 @@ public class ConfigLoader {
 
         ConsoleCommandSender console = plugin.getServer().getConsoleSender();
 
-        weapontypes = new ArrayList<>();
+        weaponTypes = new ArrayList<>();
 
         // Material list check
         for (String type : getStringList("stattrak-weapon-types")) {
             try {
                 Material.valueOf(type);
-                weapontypes.add(type);
+                weaponTypes.add(type);
                 if (plugin.getConfig().getBoolean("Options.types-on-reload"))
-                    console.sendMessage("§aSuccessfuly loaded weapon type §f" + type + "§a.");
+                    console.sendMessage("§aSuccessfully loaded weapon type §f" + type + "§a.");
             } catch (Exception e) {
                 console.sendMessage("§cWeapon type §f" + type + " §cis not valid, skiping the usage of it.");
             }
@@ -134,13 +88,13 @@ public class ConfigLoader {
     // Load the weapon types
     public void loadWeaponTypes(CommandSender p) {
 
-        weapontypes = new ArrayList<>();
+        weaponTypes = new ArrayList<>();
 
         // Material list check
         for (String type : getStringList("stattrak-weapon-types")) {
             try {
                 Material.valueOf(type);
-                weapontypes.add(type);
+                weaponTypes.add(type);
                 if (plugin.getConfig().getBoolean("Options.types-on-reload"))
                     p.sendMessage("§aSuccessfuly loaded weapon type §f" + type + "§a.");
             } catch (Exception e) {

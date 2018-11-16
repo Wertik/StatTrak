@@ -5,6 +5,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import sun.security.krb5.Config;
 import wertik.stattrak.commands.CommandHandler;
+import wertik.stattrak.handlers.StattrakHandler;
 import wertik.stattrak.listeners.DeathListener;
 
 import java.io.File;
@@ -13,7 +14,7 @@ public class Main extends JavaPlugin {
 
     private static Main instance;
     private ConfigLoader configLoader;
-    private Utils utils;
+    private StattrakHandler stattrakHandler;
 
     public static Main getInstance() {
         return Main.instance;
@@ -22,34 +23,48 @@ public class Main extends JavaPlugin {
     @Override
     public void onEnable() {
 
-        ConsoleCommandSender console = getServer().getConsoleSender();
+        info("§5Enabling StatTrak by Wertik1206, take care of your children, it's gonna explode!");
+        info("§f-----------------------");
 
         instance = this;
-        utils = new Utils();
         configLoader = new ConfigLoader();
+        stattrakHandler = new StattrakHandler();
+
+        info("§aClasses loaded");
 
         getServer().getPluginManager().registerEvents(new DeathListener(), this);
         getCommand("stattrak").setExecutor(new CommandHandler());
 
-        console.sendMessage("§5Enabling StatTrak by Wertik1206, take care of your children, it's gonna explode!");
+        info("§aListeners hooked");
 
         // YAMLS
 
-        configLoader.setYamls();
+        configLoader.loadYamls();
+        configLoader.setStrings(getServer().getConsoleSender());
         configLoader.loadWeaponTypes();
-        configLoader.setStrings(console);
+
+        info("§aData loaded");
+
+        info("§f-----------------------");
+        info("§5Done...");
     }
 
     @Override
     public void onDisable() {
-        // Eh? Oh I know!
-        ConsoleCommandSender console = getServer().getConsoleSender();
-        console.sendMessage("§5Disabling StatTrak, you're safe now.");
+        info("§5Disabling StatTrak, you're safe now.");
+        info("§f----------------");
+        info("§cChecking sandwich storage");
+        info("§f----------------");
+        info("§5Done...");
+    }
+
+    private void info(String msg) {
+        getServer().getConsoleSender().sendMessage("§f[StatTrak] " + msg);
     }
 
     public ConfigLoader getConfigLoader() {return configLoader;}
 
-    public Utils getUtils() {
-        return utils;
+    public StattrakHandler getStattrakHandler() {
+        return stattrakHandler;
     }
 }

@@ -8,16 +8,16 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.inventory.ItemStack;
 import wertik.stattrak.ConfigLoader;
 import wertik.stattrak.Main;
-import wertik.stattrak.Utils;
+import wertik.stattrak.handlers.StattrakHandler;
 
 public class DeathListener implements Listener {
 
     private ConfigLoader configLoader;
-    private Utils utils;
+    private StattrakHandler stattrakHandler;
 
     public DeathListener() {
         configLoader = Main.getInstance().getConfigLoader();
-        utils = Main.getInstance().getUtils();
+        stattrakHandler = Main.getInstance().getStattrakHandler();
     }
 
     @EventHandler
@@ -31,11 +31,14 @@ public class DeathListener implements Listener {
 
                 ItemStack weapon = p.getInventory().getItemInMainHand();
 
+                if (stattrakHandler.hasStatTrak(weapon)) {
+
                 // Weapon check, no need for lore if it's not stattrakable
-                if (!configLoader.isStatTrakable(weapon.getType().toString()))
+                if (!stattrakHandler.isStatTrakable(weapon.getType().toString()))
                     return;
 
-                p.getInventory().setItem(p.getInventory().getHeldItemSlot(), utils.recreateItem(weapon));
+                p.getInventory().setItem(p.getInventory().getHeldItemSlot(), stattrakHandler.addKill(weapon));
+                }
             }
         }
     }
