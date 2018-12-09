@@ -1,7 +1,8 @@
 name: StatTrak
-version: 1.5
+version: 1.6
 main: wertik.stattrak.Main
 author: Wertik1206
+softdepend: [CrazyEnchantments]
 commands:
   stattrak:
     description: To add the required lore tho

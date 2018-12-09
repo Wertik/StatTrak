@@ -46,9 +46,14 @@ public class CommandHandler implements CommandExecutor {
 
                 if (stattrakHandler.isStatTrakable(weapon.getType().toString())) {
 
-                    p.sendMessage(configLoader.getFormattedMessage("stattrak-applied"));
-                    p.getInventory().setItem(p.getInventory().getHeldItemSlot(), stattrakHandler.applyStatTrak(weapon));
+                    if (!stattrakHandler.hasStatTrak(weapon)) {
 
+                        p.sendMessage(configLoader.getFormattedMessage("stattrak-applied"));
+                        p.getInventory().setItem(p.getInventory().getHeldItemSlot(), stattrakHandler.applyStatTrak(weapon));
+                    } else {
+                        p.getInventory().setItem(p.getInventory().getHeldItemSlot(), stattrakHandler.removeStatTrak(weapon));
+                        p.sendMessage(configLoader.getFormattedMessage("already-stattrak"));
+                    }
                 } else
                     p.sendMessage(configLoader.getFormattedMessage("not-stattrakable"));
             } else

@@ -1,6 +1,7 @@
 package wertik.stattrak.handlers;
 
-import org.bukkit.Bukkit;
+import me.badbones69.crazyenchantments.api.CEnchantments;
+import me.badbones69.crazyenchantments.api.CrazyEnchantments;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import wertik.stattrak.ConfigLoader;
@@ -21,6 +22,31 @@ public class StattrakHandler {
         configLoader = plugin.getConfigLoader();
     }
 
+    public ItemStack removeStatTrak(ItemStack item) {
+        // NBT
+        item = NBTEditor.removeNBT(item, "kills");
+
+        // Lore
+        ItemMeta itemMeta = item.getItemMeta();
+        List<String> lore = itemMeta.getLore();
+
+        List<String> newLore = new ArrayList<>();
+
+        for (String line : lore) {
+            if (line.contains(configLoader.getStatTrakLine().replace("%kills%", "")))
+                continue;
+
+            newLore.add(line);
+        }
+
+        lore = newLore;
+
+        itemMeta.setLore(lore);
+        item.setItemMeta(itemMeta);
+
+        return item;
+    }
+
     public ItemStack applyStatTrak(ItemStack item) {
 
         // NBT
@@ -30,13 +56,29 @@ public class StattrakHandler {
         ItemMeta meta = item.getItemMeta();
         List<String> lore = new ArrayList<>();
 
-        System.out.print(configLoader.getStatTrakLine());
+        List<String> enchantments = new ArrayList<>();
 
         if (meta.hasLore()) {
-            lore = meta.getLore();
+            List<String> oldLore = meta.getLore();
             List<String> list = new ArrayList<>();
+            lore = meta.getLore();
+
+            if (Main.getInstance().getServer().getPluginManager().getPlugin("CrazyEnchantments").isEnabled()) {
+                for (String line : oldLore) {
+                    for (CEnchantments en : CrazyEnchantments.getInstance().getEnchantments()) {
+                        if (line.startsWith(en.getEnchantmentColor() + en.getCustomName())) {
+                            if (!enchantments.contains(line)) {
+                                enchantments.add(line);
+                                lore.remove(line);
+                            }
+                        }
+                    }
+                }
+
+                list.addAll(enchantments);
+            }
+
             list.add(configLoader.getStatTrakLine().replace("%kills%", String.valueOf(0)));
-            Bukkit.broadcastMessage(configLoader.getStatTrakLine().replace("%kills%", String.valueOf(0)));
             list.addAll(lore);
             lore = list;
         } else
@@ -52,7 +94,7 @@ public class StattrakHandler {
         int kills = getKills(item);
 
         // NBT
-        item = NBTEditor.writeNBT(item, "kills", String.valueOf(kills+1));
+        item = NBTEditor.writeNBT(item, "kills", String.valueOf(kills + 1));
 
         // Lore
         ItemMeta itemMeta = item.getItemMeta();
@@ -64,7 +106,7 @@ public class StattrakHandler {
 
             if (line.contains(configLoader.getStatTrakLine().replace("%kills%", ""))) {
 
-                newLore.add(configLoader.getStatTrakLine().replace("%kills%", String.valueOf(kills+1)));
+                newLore.add(configLoader.getStatTrakLine().replace("%kills%", String.valueOf(kills + 1)));
                 continue;
             }
 
@@ -81,7 +123,6 @@ public class StattrakHandler {
 
     // true/false weapon stattrakable
     public boolean isStatTrakable(String type) {
-
         if (configLoader.getWeaponTypes().contains(type))
             return true;
         else

@@ -32,6 +32,10 @@ public class Main extends JavaPlugin {
 
         info("§aClasses loaded");
 
+        // CE support
+        if (getServer().getPluginManager().getPlugin("CrazyEnchantments").isEnabled())
+            info("§aCE support enabled");
+
         getServer().getPluginManager().registerEvents(new DeathListener(), this);
         getCommand("stattrak").setExecutor(new CommandHandler());
 

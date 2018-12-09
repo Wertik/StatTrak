@@ -11,3 +11,4 @@ Strings:
   stattrak-applied: "%prefix% &eStatTrak &7enchancement applied."
   reloaded: "%prefix% &eReloaded."
   no-permission: "%prefix% &cYou lack the needed permission."
+  already-stattrak: "%prefix% &cStattrak removed."
