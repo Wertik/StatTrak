@@ -20,5 +20,6 @@
     <orderEntry type="library" name="Maven: net.md-5:bungeecord-chat:1.12-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: com.mojang:brigadier:1.0.15" level="project" />
     <orderEntry type="library" name="minecraft_server" level="project" />
+    <orderEntry type="library" name="CrazyEnchantments" level="project" />
   </component>
 </module>

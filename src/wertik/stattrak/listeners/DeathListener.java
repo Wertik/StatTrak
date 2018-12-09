@@ -6,17 +6,14 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.inventory.ItemStack;
-import wertik.stattrak.ConfigLoader;
 import wertik.stattrak.Main;
 import wertik.stattrak.handlers.StattrakHandler;
 
 public class DeathListener implements Listener {
 
-    private ConfigLoader configLoader;
     private StattrakHandler stattrakHandler;
 
     public DeathListener() {
-        configLoader = Main.getInstance().getConfigLoader();
         stattrakHandler = Main.getInstance().getStattrakHandler();
     }
 

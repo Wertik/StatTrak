@@ -1,5 +1,5 @@
 name: StatTrak
-version: 1.6
+version: 1.6.1
 main: wertik.stattrak.Main
 author: Wertik1206
 softdepend: [CrazyEnchantments]

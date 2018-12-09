@@ -47,10 +47,9 @@ public class StattrakHandler {
         return item;
     }
 
-    public ItemStack applyStatTrak(ItemStack item) {
-
+    public ItemStack setStattrak(ItemStack item, int kills) {
         // NBT
-        item = NBTEditor.writeNBT(item, "kills", String.valueOf(0));
+        item = NBTEditor.writeNBT(item, "kills", String.valueOf(kills));
 
         // Lore
         ItemMeta meta = item.getItemMeta();
@@ -78,11 +77,11 @@ public class StattrakHandler {
                 list.addAll(enchantments);
             }
 
-            list.add(configLoader.getStatTrakLine().replace("%kills%", String.valueOf(0)));
+            list.add(configLoader.getStatTrakLine().replace("%kills%", String.valueOf(kills)));
             list.addAll(lore);
             lore = list;
         } else
-            lore.add(configLoader.getStatTrakLine().replace("%kills%", String.valueOf(0)));
+            lore.add(configLoader.getStatTrakLine().replace("%kills%", String.valueOf(kills)));
 
         meta.setLore(lore);
         item.setItemMeta(meta);

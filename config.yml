@@ -4,11 +4,14 @@ Options:
   - "DIAMOND_SWORD"
   - "IRON_SWORD"
   - "DIAMOND_AXE"
+  - "BOW"
   types-on-reload: true
 Strings:
-  prefix: "&7[&eStatTrak&7]"
+  prefix: "&8[&eStatTrak&8]"
   not-stattrakable: "%prefix% &cThis item is &4non-stattrakable&c."
-  stattrak-applied: "%prefix% &eStatTrak &7enchancement applied."
-  reloaded: "%prefix% &eReloaded."
+  stattrak-applied: "%prefix% &eStatTrak &7enhancement applied."
+  reloaded: "%prefix% &7Reloaded."
   no-permission: "%prefix% &cYou lack the needed permission."
-  already-stattrak: "%prefix% &cStattrak removed."
+  stattrak-reset: "%prefix% &eStatTrak &7reset."
+  stattrak-reapplied: "%prefix% &eStatTrak &7enhancement re-applied."
+  stattrak-removed: "%prefix% &eStatTrak &7enhancement removed."
