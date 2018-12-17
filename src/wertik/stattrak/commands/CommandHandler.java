@@ -71,23 +71,24 @@ public class CommandHandler implements CommandExecutor {
                     }
                 } else if (args[0].equalsIgnoreCase("help")) {
                     p.sendMessage("§8§m----§r §eStatTrak Help Page §8§m----§r");
-                    p.sendMessage("§e/stattrak help §8-- §7This..");
-                    p.sendMessage("§e/stattrak reset §8-- §7Resets your stattrak stat.");
+                    p.sendMessage("§e/stattrak help §8- §7This..");
+                    p.sendMessage("§e/stattrak reset §8- §7Resets your stattrak stat.");
                     if (p.hasPermission("stattrak.reload") || p.isOp())
-                        p.sendMessage("§e/stattrak reload §8-- §7Reloads plugin configuration.");
-                    p.sendMessage("§e/stattrak §8-- §7Applies stattrak to your item.");
-                    p.sendMessage("§e/stattrak remove §8-- §7Removes stattrak from your item.");
+                        p.sendMessage("§e/stattrak reload §8- §7Reloads plugin configuration.");
+                    p.sendMessage("§e/stattrak §8- §7Applies stattrak to your item.");
+                    p.sendMessage("§e/stattrak remove §8- §7Removes stattrak from your item.");
                 } else if (args[0].equalsIgnoreCase("remove")) {
                     p.getInventory().setItemInMainHand(stattrakHandler.removeStatTrak(weapon));
                     p.sendMessage(configLoader.getFormattedMessage("stattrak-removed"));
                 }
             } else {
                 p.sendMessage("§8§m----§r §eStatTrak Help Page §8§m----§r");
-                p.sendMessage("§e/stattrak help §8-- §7This..");
-                p.sendMessage("§e/stattrak reset §8-- §7Resets your stattrak stat.");
+                p.sendMessage("§e/stattrak help §8- §7This..");
+                p.sendMessage("§e/stattrak reset §8- §7Resets your stattrak stat.");
                 if (p.hasPermission("stattrak.reload") || p.isOp())
-                    p.sendMessage("§e/stattrak reload §8-- §7Reloads plugin configuration.");
-                p.sendMessage("§e/stattrak §8-- §7Applies stattrak to your item.");
+                    p.sendMessage("§e/stattrak reload §8- §7Reloads plugin configuration.");
+                p.sendMessage("§e/stattrak §8- §7Applies stattrak to your item.");
+                p.sendMessage("§e/stattrak remove §8- §7Removes stattrak from your item.");
             }
         }
 

@@ -1,14 +1,9 @@
 package wertik.stattrak;
 
-import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
-import sun.security.krb5.Config;
 import wertik.stattrak.commands.CommandHandler;
 import wertik.stattrak.handlers.StattrakHandler;
 import wertik.stattrak.listeners.DeathListener;
-
-import java.io.File;
 
 public class Main extends JavaPlugin {
 
@@ -33,7 +28,7 @@ public class Main extends JavaPlugin {
         info("§aClasses loaded");
 
         // CE support
-        if (getServer().getPluginManager().getPlugin("CrazyEnchantments").isEnabled())
+        if (getServer().getPluginManager().getPlugin("CrazyEnchantments") != null)
             info("§aCE support enabled");
 
         getServer().getPluginManager().registerEvents(new DeathListener(), this);
