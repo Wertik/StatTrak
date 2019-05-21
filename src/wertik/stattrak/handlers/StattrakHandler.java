@@ -1,5 +1,6 @@
 package wertik.stattrak.handlers;
 
+import com.sun.istack.internal.NotNull;
 import me.badbones69.crazyenchantments.api.CEnchantments;
 import me.badbones69.crazyenchantments.api.CrazyEnchantments;
 import org.bukkit.inventory.ItemStack;
@@ -22,7 +23,14 @@ public class StattrakHandler {
         configLoader = plugin.getConfigLoader();
     }
 
-    public ItemStack removeStatTrak(ItemStack item) {
+    /**
+     * Remove stattrak lore and NBT data from an {@link @item}
+     * @item Item to remove stattrak from
+     *
+     * @return Item stack with stattrak lore and NBT removed
+     * */
+
+    public ItemStack removeStatTrak(@NotNull ItemStack item) {
         // NBT
         item = NBTEditor.removeNBT(item, "kills");
 
@@ -47,9 +55,18 @@ public class StattrakHandler {
         return item;
     }
 
-    public ItemStack setStattrak(ItemStack item, int kills) {
+    /**
+    * Sets StatTrak lore and NBT data for {@link @item}
+    * @item Item you want to apply stattrak to
+    * @key NBT data key
+    * @value NBT data value
+    *
+    * @return @item with changed NBT and lore data
+    * */
+
+    public ItemStack setStattrak(@NotNull ItemStack item, String key, int value) {
         // NBT
-        item = NBTEditor.writeNBT(item, "kills", String.valueOf(kills));
+        item = NBTEditor.writeNBT(item, "stattrak_"+key, String.valueOf(value));
 
         // Lore
         ItemMeta meta = item.getItemMeta();
@@ -77,11 +94,11 @@ public class StattrakHandler {
                 list.addAll(enchantments);
             }
 
-            list.add(configLoader.getStatTrakLine().replace("%kills%", String.valueOf(kills)));
+            list.add(configLoader.getStatTrakLine().replace("%value%", String.valueOf(value)));
             list.addAll(lore);
             lore = list;
         } else
-            lore.add(configLoader.getStatTrakLine().replace("%kills%", String.valueOf(kills)));
+            lore.add(configLoader.getStatTrakLine().replace("%value%", String.valueOf(value)));
 
         meta.setLore(lore);
         item.setItemMeta(meta);
@@ -89,11 +106,19 @@ public class StattrakHandler {
         return item;
     }
 
-    public ItemStack addKill(ItemStack item) {
-        int kills = getKills(item);
+    /**
+    * Used to add a point to stattrak {@link @item} value
+    * @item Item stack that has stattrak already applied to it
+    * @key NBT data key to rewrite
+    *
+    * @return Edited item stack
+    * */
+
+    public ItemStack addToStattrakValue(@NotNull ItemStack item, @NotNull String key) {
+        int value = getStattrakValue(item, key);
 
         // NBT
-        item = NBTEditor.writeNBT(item, "kills", String.valueOf(kills + 1));
+        item = NBTEditor.writeNBT(item, "stattrak_"+key, String.valueOf(value + 1));
 
         // Lore
         ItemMeta itemMeta = item.getItemMeta();
@@ -103,9 +128,8 @@ public class StattrakHandler {
 
         for (String line : lore) {
 
-            if (line.contains(configLoader.getStatTrakLine().replace("%kills%", ""))) {
-
-                newLore.add(configLoader.getStatTrakLine().replace("%kills%", String.valueOf(kills + 1)));
+            if (line.contains(configLoader.getStatTrakLine().replace("%value%", ""))) {
+                newLore.add(configLoader.getStatTrakLine().replace("%value%", String.valueOf(value + 1)));
                 continue;
             }
 
@@ -120,7 +144,12 @@ public class StattrakHandler {
         return item;
     }
 
-    // true/false weapon stattrakable
+    /**
+     * Whether or not is an item {@link @type} stattrakable
+     * @type Material name to test
+     *
+     * @return Boolean stattrakable
+     * */
     public boolean isStatTrakable(String type) {
         if (configLoader.getWeaponTypes().contains(type))
             return true;
@@ -128,11 +157,26 @@ public class StattrakHandler {
             return false;
     }
 
-    public boolean hasStatTrak(ItemStack item) {
+    /**
+     * Does {@link @item} have already stattrak on it
+     * @item Item to test
+     *
+     * @return boolean
+     * */
+
+    public boolean hasStatTrak(@NotNull ItemStack item) {
         return NBTEditor.hasNBTTag(item, "kills");
     }
 
-    public int getKills(ItemStack item) {
-        return Integer.valueOf(NBTUtils.strip(NBTEditor.getNBT(item, "kills")));
+    /**
+     * Returns value of an NBT data {@link @key}
+     * @item Item stack to load from
+     * @key NBT data key to look for
+     *
+     * @return Integer value
+     * */
+
+    public int getStattrakValue(@NotNull ItemStack item, String key) {
+        return Integer.valueOf(NBTUtils.strip(NBTEditor.getNBT(item, "stattrak_"+key)));
     }
 }

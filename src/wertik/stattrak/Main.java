@@ -58,7 +58,7 @@ public class Main extends JavaPlugin {
     }
 
     private void info(String msg) {
-        getServer().getConsoleSender().sendMessage("§f[StatTrak] " + msg);
+        getServer().getLogger().info("§f[StatTrak] " + msg);
     }
 
     public ConfigLoader getConfigLoader() {return configLoader;}

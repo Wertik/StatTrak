@@ -21,7 +21,6 @@ public class CommandHandler implements CommandExecutor {
         stattrakHandler = plugin.getStattrakHandler();
     }
 
-    @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 
         if (sender instanceof Player) {
@@ -33,14 +32,21 @@ public class CommandHandler implements CommandExecutor {
             if (args.length == 0) {
                 if (p.hasPermission("stattrak.apply") || p.isOp()) {
                     if (stattrakHandler.isStatTrakable(weapon.getType().toString())) {
+
+                        // IF already stattrak-ed
                         if (!stattrakHandler.hasStatTrak(weapon)) {
                             p.sendMessage(configLoader.getFormattedMessage("stattrak-applied"));
-                            p.getInventory().setItem(p.getInventory().getHeldItemSlot(), stattrakHandler.setStattrak(weapon, 0));
+                            // Apply stattrak for the first time
+                            p.getInventory().setItemInMainHand(stattrakHandler.setStattrak(p.getInventory().getItemInMainHand(), "kills", 0));
 
+                        // IF NOT
                         } else {
-                            int kills = stattrakHandler.getKills(weapon);
+                            // Save kills
+                            int kills = stattrakHandler.getStattrakValue(weapon, "kills");
+                            // Remove old stattrak lore
                             ItemStack item = stattrakHandler.removeStatTrak(p.getInventory().getItemInMainHand());
-                            p.getInventory().setItemInMainHand(stattrakHandler.setStattrak(item, kills));
+                            // Reapply with a kills value
+                            p.getInventory().setItemInMainHand(stattrakHandler.setStattrak(item, "kills", kills));
                             p.sendMessage(configLoader.getFormattedMessage("stattrak-reapplied"));
                         }
                     } else
@@ -52,10 +58,11 @@ public class CommandHandler implements CommandExecutor {
                 if (args[0].equalsIgnoreCase("reset")) {
                     if (p.hasPermission("stattrak.apply") || p.isOp()) {
                         if (stattrakHandler.isStatTrakable(weapon.getType().toString())) {
+                            // Remove stattrak
                             ItemStack item = stattrakHandler.removeStatTrak(p.getInventory().getItemInMainHand());
-                            p.getInventory().setItemInMainHand(stattrakHandler.setStattrak(item, 0));
+                            // Reapply
+                            p.getInventory().setItemInMainHand(stattrakHandler.setStattrak(item, "kills", 0));
                             p.sendMessage(configLoader.getFormattedMessage("stattrak-reset"));
-
                         } else
                             p.sendMessage(configLoader.getFormattedMessage("not-stattrakable"));
                     } else

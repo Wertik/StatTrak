@@ -13,7 +13,7 @@ public class ConfigLoader {
 
     private Main plugin;
     public static List<String> weaponTypes;
-    public String line;
+    private String line;
 
     public ConfigLoader() {
         plugin = Main.getInstance();

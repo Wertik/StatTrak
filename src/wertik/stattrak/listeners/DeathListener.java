@@ -19,23 +19,13 @@ public class DeathListener implements Listener {
 
     @EventHandler
     public void onDeath(EntityDeathEvent e) {
-
         if (e.getEntity().getType().equals(EntityType.PLAYER)) {
-
             if (e.getEntity().getKiller() instanceof Player) {
-
                 Player p = e.getEntity().getKiller();
-
                 ItemStack weapon = p.getInventory().getItemInMainHand();
 
-                if (stattrakHandler.hasStatTrak(weapon)) {
-
-                // Weapon check, no need for lore if it's not stattrakable
-                if (!stattrakHandler.isStatTrakable(weapon.getType().toString()))
-                    return;
-
-                p.getInventory().setItem(p.getInventory().getHeldItemSlot(), stattrakHandler.addKill(weapon));
-                }
+                if (stattrakHandler.isStatTrakable(weapon.getType().toString()) && stattrakHandler.hasStatTrak(weapon))
+                        p.getInventory().setItemInMainHand(stattrakHandler.addToStattrakValue(weapon, "kills"));
             }
         }
     }
