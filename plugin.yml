@@ -1,8 +1,7 @@
-name: StatTrak
-version: 1.6.1
+name: PVPC_StatTrak
+version: 1.7
 main: wertik.stattrak.Main
 author: Wertik1206
-softdepend: [CrazyEnchantments]
 commands:
   stattrak:
     description: To add the required lore tho

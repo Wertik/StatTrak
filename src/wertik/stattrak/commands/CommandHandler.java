@@ -11,91 +11,111 @@ import wertik.stattrak.handlers.StattrakHandler;
 
 public class CommandHandler implements CommandExecutor {
 
-    private ConfigLoader configLoader;
     private Main plugin;
+
+    private ConfigLoader configLoader;
     private StattrakHandler stattrakHandler;
 
     public CommandHandler() {
         plugin = Main.getInstance();
+
         configLoader = plugin.getConfigLoader();
         stattrakHandler = plugin.getStattrakHandler();
     }
 
+    private void help(CommandSender s, String label) {
+        s.sendMessage("§8§m--------§r §eStatTrak §8§m--------§r" +
+                "\n§e/" + label + " reload §8- §7Reload the plugin." +
+                "\n§e/" + label + " §8- §7Apply stattrak on your item." +
+                "\n§e/" + label + " help §8- §7This." +
+                "\n§e/" + label + " reset §8- §7Reset your stattrak kills." +
+                "\n§e/" + label + " remove §8- §7Remove stattrak from your item." +
+                "\n§e/" + label + " info §8- §7Weapon and entity info.");
+    }
+
+    @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 
         if (sender instanceof Player) {
 
             Player p = (Player) sender;
 
-            ItemStack weapon = p.getEquipment().getItemInMainHand();
+            ItemStack weapon = p.getItemInHand();
 
+            // Apply
             if (args.length == 0) {
-                if (p.hasPermission("stattrak.apply") || p.isOp()) {
-                    if (stattrakHandler.isStatTrakable(weapon.getType().toString())) {
-
-                        // IF already stattrak-ed
-                        if (!stattrakHandler.hasStatTrak(weapon)) {
-                            p.sendMessage(configLoader.getFormattedMessage("stattrak-applied"));
-                            // Apply stattrak for the first time
-                            p.getInventory().setItemInMainHand(stattrakHandler.setStattrak(p.getInventory().getItemInMainHand(), "kills", 0));
-
-                        // IF NOT
-                        } else {
-                            // Save kills
-                            int kills = stattrakHandler.getStattrakValue(weapon, "kills");
-                            // Remove old stattrak lore
-                            ItemStack item = stattrakHandler.removeStatTrak(p.getInventory().getItemInMainHand());
-                            // Reapply with a kills value
-                            p.getInventory().setItemInMainHand(stattrakHandler.setStattrak(item, "kills", kills));
-                            p.sendMessage(configLoader.getFormattedMessage("stattrak-reapplied"));
-                        }
-                    } else
-                        p.sendMessage(configLoader.getFormattedMessage("not-stattrakable"));
-                } else
+                if (!p.hasPermission("stattrak.apply") && !p.isOp()) {
                     p.sendMessage(configLoader.getFormattedMessage("no-permission"));
+                    return true;
+                }
 
-            } else if (args.length == 1) {
-                if (args[0].equalsIgnoreCase("reset")) {
+                if (!stattrakHandler.isStatTrakable(weapon.getType().toString())) {
+                    p.sendMessage(configLoader.getFormattedMessage("not-stattrakable"));
+                    return true;
+                }
+
+                if (stattrakHandler.hasStatTrak(weapon)) {
+                    ItemStack item = p.getInventory().getItemInHand();
+
+                    // Save kills
+                    int kills = stattrakHandler.getStattrakValue(weapon, "kills");
+
+                    // Reapply with a kills value
+                    p.setItemInHand(stattrakHandler.setStattrak(item, "kills", kills, kills));
+
+                    p.sendMessage(configLoader.getFormattedMessage("stattrak-reapplied"));
+                } else {
+                    // Apply stattrak for the first time
+                    p.setItemInHand(stattrakHandler.setStattrak(p.getItemInHand(), "kills", 0, 0));
+                    p.sendMessage(configLoader.getFormattedMessage("stattrak-applied"));
+                }
+
+                return true;
+            }
+
+            switch (args[0].toLowerCase()) {
+                case "reload":
+                    if (sender.hasPermission("stattrak.reload")) {
+                        plugin.reloadConfig();
+
+                        configLoader.loadWeaponTypes(sender);
+                        configLoader.loadEntityTypes(sender);
+                        configLoader.setStrings(sender);
+
+                        sender.sendMessage(configLoader.getFormattedMessage("reloaded"));
+
+                        return true;
+                    }
+                    break;
+                case "reset":
                     if (p.hasPermission("stattrak.apply") || p.isOp()) {
                         if (stattrakHandler.isStatTrakable(weapon.getType().toString())) {
                             // Remove stattrak
-                            ItemStack item = stattrakHandler.removeStatTrak(p.getInventory().getItemInMainHand());
+                            ItemStack item = stattrakHandler.removeStatTrak(p.getInventory().getItemInHand(), "kills");
                             // Reapply
-                            p.getInventory().setItemInMainHand(stattrakHandler.setStattrak(item, "kills", 0));
+                            p.getInventory().setItemInHand(stattrakHandler.setStattrak(item, "kills", 0, 0));
                             p.sendMessage(configLoader.getFormattedMessage("stattrak-reset"));
                         } else
                             p.sendMessage(configLoader.getFormattedMessage("not-stattrakable"));
                     } else
                         p.sendMessage(configLoader.getFormattedMessage("no-permission"));
-
-                } else if (args[0].equalsIgnoreCase("reload")) {
-                    if (sender.hasPermission("stattrak.reload")) {
-                        plugin.reloadConfig();
-                        configLoader.loadWeaponTypes(sender);
-                        configLoader.setStrings(sender);
-                        sender.sendMessage(configLoader.getFormattedMessage("reloaded"));
-                        return true;
-                    }
-                } else if (args[0].equalsIgnoreCase("help")) {
-                    p.sendMessage("§8§m----§r §eStatTrak Help Page §8§m----§r");
-                    p.sendMessage("§e/stattrak help §8- §7This..");
-                    p.sendMessage("§e/stattrak reset §8- §7Resets your stattrak stat.");
-                    if (p.hasPermission("stattrak.reload") || p.isOp())
-                        p.sendMessage("§e/stattrak reload §8- §7Reloads plugin configuration.");
-                    p.sendMessage("§e/stattrak §8- §7Applies stattrak to your item.");
-                    p.sendMessage("§e/stattrak remove §8- §7Removes stattrak from your item.");
-                } else if (args[0].equalsIgnoreCase("remove")) {
-                    p.getInventory().setItemInMainHand(stattrakHandler.removeStatTrak(weapon));
+                    break;
+                case "info":
+                    p.sendMessage("§8§m----§r §eStatTrak Info Page §8§m----§r");
+                    p.sendMessage("§aWeapon types:");
+                    for (String type : configLoader.getWeaponTypes())
+                        p.sendMessage("§8 - §e" + type);
+                    p.sendMessage("§aEntity types:");
+                    for (String type : configLoader.getEntityTypes())
+                        p.sendMessage("§8 - §e" + type);
+                    break;
+                case "remove":
+                    p.getInventory().setItemInHand(stattrakHandler.removeStatTrak(weapon, "kills"));
                     p.sendMessage(configLoader.getFormattedMessage("stattrak-removed"));
-                }
-            } else {
-                p.sendMessage("§8§m----§r §eStatTrak Help Page §8§m----§r");
-                p.sendMessage("§e/stattrak help §8- §7This..");
-                p.sendMessage("§e/stattrak reset §8- §7Resets your stattrak stat.");
-                if (p.hasPermission("stattrak.reload") || p.isOp())
-                    p.sendMessage("§e/stattrak reload §8- §7Reloads plugin configuration.");
-                p.sendMessage("§e/stattrak §8- §7Applies stattrak to your item.");
-                p.sendMessage("§e/stattrak remove §8- §7Removes stattrak from your item.");
+                    break;
+                case "help":
+                default:
+                    help(sender, label);
             }
         }
 

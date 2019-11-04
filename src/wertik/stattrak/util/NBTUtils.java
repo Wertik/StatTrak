@@ -1,4 +1,4 @@
-package wertik.stattrak.nbt;
+package wertik.stattrak.util;
 
 import com.sun.istack.internal.NotNull;
 

@@ -1,182 +1,126 @@
 package wertik.stattrak.handlers;
 
 import com.sun.istack.internal.NotNull;
-import me.badbones69.crazyenchantments.api.CEnchantments;
-import me.badbones69.crazyenchantments.api.CrazyEnchantments;
+import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import wertik.stattrak.ConfigLoader;
 import wertik.stattrak.Main;
-import wertik.stattrak.nbt.NBTEditor;
-import wertik.stattrak.nbt.NBTUtils;
-
-import java.util.ArrayList;
-import java.util.List;
+import wertik.stattrak.util.NBTEditor;
+import wertik.stattrak.util.NBTUtils;
+import wertik.stattrak.util.Utils;
 
 public class StattrakHandler {
 
     private Main plugin;
+
     private ConfigLoader configLoader;
 
     public StattrakHandler() {
         plugin = Main.getInstance();
+
         configLoader = plugin.getConfigLoader();
     }
 
     /**
      * Remove stattrak lore and NBT data from an {@link @item}
-     * @item Item to remove stattrak from
      *
      * @return Item stack with stattrak lore and NBT removed
-     * */
+     * @item Item to remove stattrak from
+     */
 
-    public ItemStack removeStatTrak(@NotNull ItemStack item) {
+    public ItemStack removeStatTrak(@NotNull ItemStack item, String key) {
         // NBT
-        item = NBTEditor.removeNBT(item, "kills");
+        item = NBTEditor.removeNBT(item, "stattrak_kills");
 
         // Lore
         ItemMeta itemMeta = item.getItemMeta();
-        List<String> lore = itemMeta.getLore();
-
-        List<String> newLore = new ArrayList<>();
-
-        for (String line : lore) {
-            if (line.contains(configLoader.getStatTrakLine().replace("%kills%", "")))
-                continue;
-
-            newLore.add(line);
-        }
-
-        lore = newLore;
-
-        itemMeta.setLore(lore);
+        itemMeta.setDisplayName(ChatColor.BLUE + item.getType().toString().toUpperCase());
         item.setItemMeta(itemMeta);
 
         return item;
     }
 
     /**
-    * Sets StatTrak lore and NBT data for {@link @item}
-    * @item Item you want to apply stattrak to
-    * @key NBT data key
-    * @value NBT data value
-    *
-    * @return @item with changed NBT and lore data
-    * */
+     * Sets StatTrak lore and NBT data for {@link @item}
+     *
+     * @return @item with changed NBT and lore data
+     * @item Item you want to apply stattrak to
+     * @key NBT data key
+     * @value NBT data value
+     */
 
-    public ItemStack setStattrak(@NotNull ItemStack item, String key, int value) {
+    public ItemStack setStattrak(@NotNull ItemStack item, String key, int value, int oldValue) {
         // NBT
-        item = NBTEditor.writeNBT(item, "stattrak_"+key, String.valueOf(value));
+        item = NBTEditor.writeNBT(item, "stattrak_" + key, String.valueOf(value));
 
-        // Lore
+        // Item name
         ItemMeta meta = item.getItemMeta();
-        List<String> lore = new ArrayList<>();
 
-        List<String> enchantments = new ArrayList<>();
+        if (meta.getDisplayName() == null)
+            // Set to normalized name
+            meta.setDisplayName(Utils.color(configLoader.getStatTrakLine().replace("%value%", configLoader.getValueFormat().replace("%value%", String.valueOf(value))).replace("%defaultName%", configLoader.getNormalizedName(item.getType().toString()))));
+        else {
+            String name = meta.getDisplayName();
 
-        if (meta.hasLore()) {
-            List<String> oldLore = meta.getLore();
-            List<String> list = new ArrayList<>();
-            lore = meta.getLore();
+            name = name.replace(" " + configLoader.getValueFormat().replace("%value%", String.valueOf(oldValue)), "");
 
-            if (Main.getInstance().getServer().getPluginManager().getPlugin("CrazyEnchantments").isEnabled()) {
-                for (String line : oldLore) {
-                    for (CEnchantments en : CrazyEnchantments.getInstance().getEnchantments()) {
-                        if (line.startsWith(en.getEnchantmentColor() + en.getCustomName())) {
-                            if (!enchantments.contains(line)) {
-                                enchantments.add(line);
-                                lore.remove(line);
-                            }
-                        }
-                    }
-                }
+            // Set this display name
+            meta.setDisplayName(Utils.color(configLoader.getStatTrakLine().replace("%value%", configLoader.getValueFormat().replace("%value%", String.valueOf(value))).replace("%defaultName%", name)));
+        }
 
-                list.addAll(enchantments);
-            }
-
-            list.add(configLoader.getStatTrakLine().replace("%value%", String.valueOf(value)));
-            list.addAll(lore);
-            lore = list;
-        } else
-            lore.add(configLoader.getStatTrakLine().replace("%value%", String.valueOf(value)));
-
-        meta.setLore(lore);
         item.setItemMeta(meta);
 
         return item;
     }
 
     /**
-    * Used to add a point to stattrak {@link @item} value
-    * @item Item stack that has stattrak already applied to it
-    * @key NBT data key to rewrite
-    *
-    * @return Edited item stack
-    * */
+     * Used to add a point to stattrak {@link @item} value
+     *
+     * @return Edited item stack
+     * @item Item stack that has stattrak already applied to it
+     * @key NBT data key to rewrite
+     */
 
     public ItemStack addToStattrakValue(@NotNull ItemStack item, @NotNull String key) {
-        int value = getStattrakValue(item, key);
-
-        // NBT
-        item = NBTEditor.writeNBT(item, "stattrak_"+key, String.valueOf(value + 1));
-
-        // Lore
-        ItemMeta itemMeta = item.getItemMeta();
-        List<String> lore = itemMeta.getLore();
-
-        List<String> newLore = new ArrayList<>();
-
-        for (String line : lore) {
-
-            if (line.contains(configLoader.getStatTrakLine().replace("%value%", ""))) {
-                newLore.add(configLoader.getStatTrakLine().replace("%value%", String.valueOf(value + 1)));
-                continue;
-            }
-
-            newLore.add(line);
-        }
-
-        lore = newLore;
-
-        itemMeta.setLore(lore);
-        item.setItemMeta(itemMeta);
-
-        return item;
+        int kills = getStattrakValue(item, key);
+        return setStattrak(item, key, kills + 1, kills);
     }
 
     /**
      * Whether or not is an item {@link @type} stattrakable
-     * @type Material name to test
      *
      * @return Boolean stattrakable
-     * */
+     * @type Material name to test
+     */
     public boolean isStatTrakable(String type) {
-        if (configLoader.getWeaponTypes().contains(type))
-            return true;
-        else
-            return false;
+        return configLoader.getWeaponTypes().contains(type);
+    }
+
+    public boolean isCountable(String type) {
+        return configLoader.getEntityTypes().contains(type);
     }
 
     /**
      * Does {@link @item} have already stattrak on it
-     * @item Item to test
      *
      * @return boolean
-     * */
+     * @item Item to test
+     */
 
     public boolean hasStatTrak(@NotNull ItemStack item) {
-        return NBTEditor.hasNBTTag(item, "kills");
+        return NBTEditor.hasNBTTag(item, "stattrak_kills");
     }
 
     /**
      * Returns value of an NBT data {@link @key}
-     * @item Item stack to load from
-     * @key NBT data key to look for
      *
      * @return Integer value
-     * */
+     * @item Item stack to load from
+     * @key NBT data key to look for
+     */
 
     public int getStattrakValue(@NotNull ItemStack item, String key) {
-        return Integer.valueOf(NBTUtils.strip(NBTEditor.getNBT(item, "stattrak_"+key)));
+        return Integer.valueOf(NBTUtils.strip(NBTEditor.getNBT(item, "stattrak_" + key)));
     }
 }

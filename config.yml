@@ -1,10 +1,15 @@
 Options:
-  stattrak-line: "&7[&eStatTrak&7] &7Kills: &4%kills%"
+  stattrak-line: "%defaultName% %value%"
+  value-format: '&7+&c%value%'
   stattrak-weapon-types:
-  - "DIAMOND_SWORD"
-  - "IRON_SWORD"
-  - "DIAMOND_AXE"
-  - "BOW"
+    - "DIAMOND_SWORD"
+    - "IRON_SWORD"
+    - "DIAMOND_AXE"
+    - "BOW"
+  stattrak-entity-types:
+    - "PLAYER"
+    - "PIG"
+    - "SLIME"
   types-on-reload: true
 Strings:
   prefix: "&8[&eStatTrak&8]"
@@ -15,3 +20,5 @@ Strings:
   stattrak-reset: "%prefix% &eStatTrak &7reset."
   stattrak-reapplied: "%prefix% &eStatTrak &7enhancement re-applied."
   stattrak-removed: "%prefix% &eStatTrak &7enhancement removed."
+normalized-names:
+  DIAMOND_SWORD: "Diamond Sword"
