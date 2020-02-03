@@ -1,0 +1,10 @@
+name: PVPC_StatTrak
+version: 1.8
+main: space.devport.wertik.stattrak
+author: Wertik1206
+commands:
+  stattrak:
+    description: Main plugin command.
+permission:
+  stattrak.apply:
+    description: Permission to apply stattrak

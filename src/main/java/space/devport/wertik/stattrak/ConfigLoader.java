@@ -1,5 +1,6 @@
-package wertik.stattrak;
+package space.devport.wertik.stattrak;
 
+import lombok.Getter;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
@@ -15,20 +16,22 @@ public class ConfigLoader {
 
     private Main plugin;
 
+    @Getter
     public List<String> weaponTypes;
+
+    @Getter
     public List<String> entityTypes;
 
-    public HashMap<String, String> normalizedNames;
-
+    @Getter
     private String line;
 
+    public HashMap<String, String> normalizedNames = new HashMap<>();
+
     public ConfigLoader() {
-        plugin = Main.getInstance();
-        normalizedNames = new HashMap<>();
+        plugin = Main.inst;
     }
 
     public void setStrings(CommandSender p) {
-
         this.line = format(getString("stattrak-line"));
 
         if (plugin.getConfig().getBoolean("Options.types-on-reload"))
@@ -59,17 +62,9 @@ public class ConfigLoader {
         return format(plugin.getConfig().getString("Strings." + name).replace("%prefix%", plugin.getConfig().getString("Strings.prefix")));
     }
 
-    // Get weapon types
-    public List<String> getWeaponTypes() {
-        return weaponTypes;
+    public String getValueFormat() {
+        return format(getString("value-format"));
     }
-
-    // Get StatTrak line
-    public String getStatTrakLine() {
-        return line;
-    }
-
-    public String getValueFormat() {return format(getString("value-format"));}
 
     public String format(String msg) {
         return ChatColor.translateAlternateColorCodes('&', msg);
@@ -102,10 +97,6 @@ public class ConfigLoader {
 
     public String getNormalizedName(String type) {
         return normalizedNames.getOrDefault(type.toUpperCase(), type);
-    }
-
-    public List<String> getEntityTypes() {
-        return entityTypes;
     }
 
     public void loadEntityTypes() {

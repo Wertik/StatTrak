@@ -1,6 +1,6 @@
-package wertik.stattrak.util;
+package space.devport.wertik.stattrak.util;
 
-import com.sun.istack.internal.NotNull;
+import com.avaje.ebean.validation.NotNull;
 import net.minecraft.server.v1_8_R3.NBTBase;
 import net.minecraft.server.v1_8_R3.NBTTagCompound;
 import net.minecraft.server.v1_8_R3.NBTTagString;
@@ -19,7 +19,7 @@ public class NBTEditor {
      * @param value Value of NBT Compound.
      * @return Edited item. As new.
      */
-    public static ItemStack writeNBT(@NotNull ItemStack item, @NotNull String key, @NotNull String value) {
+    public static ItemStack writeNBT(ItemStack item, String key, String value) {
         // Copy of ItemStack(Bukkit)
         net.minecraft.server.v1_8_R3.ItemStack minecraftItemStack = CraftItemStack.asNMSCopy(item);
         NBTTagCompound nbtTagCompound = minecraftItemStack.hasTag() ? minecraftItemStack.getTag() : new NBTTagCompound();
@@ -39,12 +39,12 @@ public class NBTEditor {
     /**
      * Writes {@link @key} (key) and {@link @value} (value) to the {@link @item} (item's) NBT.
      *
-     * @param item  Item that NBT Data's will be changed.
-     * @param key   Key of NBT Compound.
+     * @param item Item that NBT Data's will be changed.
+     * @param key  Key of NBT Compound.
      * @param <T>  Generic thing
      * @return ItemStack that NBT's will be changed
      */
-    public static <T extends NBTBase> ItemStack writeNBT(@NotNull ItemStack item, @NotNull String key, @NotNull T value) {
+    public static <T extends NBTBase> ItemStack writeNBT(ItemStack item, String key, T value) {
         // Copy of ItemStack(Bukkit)
         net.minecraft.server.v1_8_R3.ItemStack minecraftItemStack = CraftItemStack.asNMSCopy(item);
         NBTTagCompound nbtTagCompound = minecraftItemStack.hasTag() ? minecraftItemStack.getTag() : new NBTTagCompound();
@@ -69,7 +69,7 @@ public class NBTEditor {
      * @throws NullPointerException when did found anything in NBTCompound of item.
      */
 
-    public static String getNBT(@NotNull ItemStack item, @NotNull String key) {
+    public static String getNBT(ItemStack item, String key) {
         // Copy of ItemStack(Bukkit)
         net.minecraft.server.v1_8_R3.ItemStack minecraftItemStack = CraftItemStack.asNMSCopy(item);
         NBTTagCompound nbtTagCompound = minecraftItemStack.hasTag() ? minecraftItemStack.getTag() : new NBTTagCompound();
@@ -97,7 +97,7 @@ public class NBTEditor {
      * @return NBTBase child that you choose.
      * @throws NullPointerException when did found anything in NBTCompound of item
      */
-    public static <T extends NBTBase> T getNBT(@NotNull ItemStack item, @NotNull String key, Class<T> clazz) {
+    public static <T extends NBTBase> T getNBT(ItemStack item, String key, Class<T> clazz) {
         // Copy of ItemStack(Bukkit)
         net.minecraft.server.v1_8_R3.ItemStack minecraftItemStack = CraftItemStack.asNMSCopy(item);
         NBTTagCompound nbtTagCompound = minecraftItemStack.hasTag() ? minecraftItemStack.getTag() : new NBTTagCompound();
@@ -118,7 +118,7 @@ public class NBTEditor {
      * @param key  Key of NBT Compound.
      * @return Edited item. As new.
      */
-    public static ItemStack removeNBT(@NotNull ItemStack item, @NotNull String key) {
+    public static ItemStack removeNBT(ItemStack item, String key) {
         net.minecraft.server.v1_8_R3.ItemStack minecraftItemStack = CraftItemStack.asNMSCopy(item);
         if (minecraftItemStack.hasTag()) {
             NBTTagCompound nbtTagCompound = minecraftItemStack.getTag();
@@ -136,12 +136,12 @@ public class NBTEditor {
      * @return boolean
      */
 
-    public static boolean hasNBT(@NotNull ItemStack item) {
+    public static boolean hasNBT(ItemStack item) {
         net.minecraft.server.v1_8_R3.ItemStack minecraftItemStack = CraftItemStack.asNMSCopy(item);
         return minecraftItemStack.hasTag();
     }
 
-    public static boolean hasNBTTag(@NotNull ItemStack item, String tag) {
+    public static boolean hasNBTTag(ItemStack item, String tag) {
         net.minecraft.server.v1_8_R3.ItemStack minecraftItemStack = CraftItemStack.asNMSCopy(item);
 
         NBTTagCompound nbtTagCompound = minecraftItemStack.hasTag() ? minecraftItemStack.getTag() : new NBTTagCompound();

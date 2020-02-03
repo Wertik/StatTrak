@@ -1,35 +1,35 @@
-package wertik.stattrak.commands;
+package space.devport.wertik.stattrak.commands;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import wertik.stattrak.ConfigLoader;
-import wertik.stattrak.Main;
-import wertik.stattrak.handlers.StattrakHandler;
+import space.devport.wertik.stattrak.ConfigLoader;
+import space.devport.wertik.stattrak.Main;
+import space.devport.wertik.stattrak.handlers.StatTrakHandler;
 
-public class CommandHandler implements CommandExecutor {
+public class StatTrakCommand implements CommandExecutor {
 
     private Main plugin;
 
     private ConfigLoader configLoader;
-    private StattrakHandler stattrakHandler;
+    private StatTrakHandler stattrakHandler;
 
-    public CommandHandler() {
-        plugin = Main.getInstance();
+    public StatTrakCommand() {
+        plugin = Main.inst;
 
         configLoader = plugin.getConfigLoader();
         stattrakHandler = plugin.getStattrakHandler();
     }
 
     private void help(CommandSender s, String label) {
-        s.sendMessage("§8§m--------§r §eStatTrak §8§m--------§r" +
+        s.sendMessage("§8§m--------§e StatTrak §7v.§f" + plugin.getDescription().getVersion() + " §8§m--------§r" +
                 "\n§e/" + label + " reload §8- §7Reload the plugin." +
-                "\n§e/" + label + " §8- §7Apply stattrak on your item." +
+                "\n§e/" + label + " §8- §7Apply StatTrak on your item." +
                 "\n§e/" + label + " help §8- §7This." +
-                "\n§e/" + label + " reset §8- §7Reset your stattrak kills." +
-                "\n§e/" + label + " remove §8- §7Remove stattrak from your item." +
+                "\n§e/" + label + " reset §8- §7Reset your StatTrak kills." +
+                "\n§e/" + label + " remove §8- §7Remove StatTrak from your item." +
                 "\n§e/" + label + " info §8- §7Weapon and entity info.");
     }
 
@@ -58,15 +58,15 @@ public class CommandHandler implements CommandExecutor {
                     ItemStack item = p.getInventory().getItemInHand();
 
                     // Save kills
-                    int kills = stattrakHandler.getStattrakValue(weapon, "kills");
+                    int kills = stattrakHandler.getStatTrakValue(weapon);
 
                     // Reapply with a kills value
-                    p.setItemInHand(stattrakHandler.setStattrak(item, "kills", kills, kills));
+                    p.setItemInHand(stattrakHandler.setStatTrak(item, kills, kills));
 
                     p.sendMessage(configLoader.getFormattedMessage("stattrak-reapplied"));
                 } else {
                     // Apply stattrak for the first time
-                    p.setItemInHand(stattrakHandler.setStattrak(p.getItemInHand(), "kills", 0, 0));
+                    p.setItemInHand(stattrakHandler.setStatTrak(p.getItemInHand(), 0, 0));
                     p.sendMessage(configLoader.getFormattedMessage("stattrak-applied"));
                 }
 
@@ -91,9 +91,9 @@ public class CommandHandler implements CommandExecutor {
                     if (p.hasPermission("stattrak.apply") || p.isOp()) {
                         if (stattrakHandler.isStatTrakable(weapon.getType().toString())) {
                             // Remove stattrak
-                            ItemStack item = stattrakHandler.removeStatTrak(p.getInventory().getItemInHand(), "kills");
+                            ItemStack item = stattrakHandler.removeStatTrak(p.getInventory().getItemInHand());
                             // Reapply
-                            p.getInventory().setItemInHand(stattrakHandler.setStattrak(item, "kills", 0, 0));
+                            p.getInventory().setItemInHand(stattrakHandler.setStatTrak(item, 0, 0));
                             p.sendMessage(configLoader.getFormattedMessage("stattrak-reset"));
                         } else
                             p.sendMessage(configLoader.getFormattedMessage("not-stattrakable"));
@@ -101,7 +101,7 @@ public class CommandHandler implements CommandExecutor {
                         p.sendMessage(configLoader.getFormattedMessage("no-permission"));
                     break;
                 case "info":
-                    p.sendMessage("§8§m----§r §eStatTrak Info Page §8§m----§r");
+                    p.sendMessage("§8§m--------§r §eStatTrak Info Page §8§m--------§r");
                     p.sendMessage("§aWeapon types:");
                     for (String type : configLoader.getWeaponTypes())
                         p.sendMessage("§8 - §e" + type);
@@ -110,7 +110,7 @@ public class CommandHandler implements CommandExecutor {
                         p.sendMessage("§8 - §e" + type);
                     break;
                 case "remove":
-                    p.getInventory().setItemInHand(stattrakHandler.removeStatTrak(weapon, "kills"));
+                    p.getInventory().setItemInHand(stattrakHandler.removeStatTrak(weapon));
                     p.sendMessage(configLoader.getFormattedMessage("stattrak-removed"));
                     break;
                 case "help":

@@ -1,4 +1,4 @@
-package wertik.stattrak.util;
+package space.devport.wertik.stattrak.util;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;

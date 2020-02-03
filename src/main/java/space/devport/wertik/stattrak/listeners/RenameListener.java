@@ -1,4 +1,4 @@
-package wertik.stattrak.listeners;
+package space.devport.wertik.stattrak.listeners;
 
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
@@ -7,24 +7,20 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import wertik.stattrak.Main;
-import wertik.stattrak.util.NBTEditor;
+import space.devport.wertik.stattrak.Main;
+import space.devport.wertik.stattrak.util.NBTEditor;
 
 public class RenameListener implements Listener {
 
     private Main plugin;
 
     public RenameListener() {
-        plugin = Main.getInstance();
+        plugin = Main.inst;
     }
 
     @EventHandler
     public void onRename(InventoryClickEvent e) {
-        if (!e.getInventory().getType().equals(InventoryType.ANVIL))
-            return;
-
-        if (e.getSlot() != 2)
-            return;
+        if (e.isCancelled() || !e.getInventory().getType().equals(InventoryType.ANVIL) || e.getSlot() != 2) return;
 
         if (e.getInventory().getItem(2) == null)
             return;
@@ -40,7 +36,7 @@ public class RenameListener implements Listener {
         if (item.hasItemMeta()) {
             ItemMeta meta = item.getItemMeta();
 
-            int kills = plugin.getStattrakHandler().getStattrakValue(item, "kills");
+            int kills = plugin.getStattrakHandler().getStatTrakValue(item);
 
             String del = plugin.getConfigLoader().getString("value-format").replace("%value%", String.valueOf(kills)).replace("&", "");
 
@@ -49,7 +45,7 @@ public class RenameListener implements Listener {
 
             item.setItemMeta(meta);
 
-            item = plugin.getStattrakHandler().setStattrak(item, "kills", plugin.getStattrakHandler().getStattrakValue(item, "kills"), plugin.getStattrakHandler().getStattrakValue(item, "kills"));
+            item = plugin.getStattrakHandler().setStatTrak(item, kills, kills);
 
             e.setCurrentItem(item);
         }
