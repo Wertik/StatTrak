@@ -4,9 +4,11 @@
 
     <groupId>space.devport.wertik.stattrak</groupId>
     <artifactId>PVPC_Stattrak</artifactId>
-    <version>1.0</version>
+    <version>1.8</version>
+    <packaging>jar</packaging>
 
     <build>
+        <finalName>StatTrak-${version}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
